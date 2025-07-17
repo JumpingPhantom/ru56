@@ -1,3 +1,5 @@
+use std::ops::{Add, Mul};
+
 use crate::vector::Vec2;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -11,7 +13,6 @@ pub struct Force2D {
     pub force_vector: Vec2,
 }
 
-use std::ops::{Add, Mul};
 
 impl Add for Force2D {
     type Output = Self;

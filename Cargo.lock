@@ -3,5 +3,12 @@
 version = 4
 
 [[package]]
-name = "ru56"
+name = "ru56-cli"
+version = "0.1.0"
+dependencies = [
+ "ru56-lib",
+]
+
+[[package]]
+name = "ru56-lib"
 version = "0.1.0"

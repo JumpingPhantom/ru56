@@ -42,7 +42,6 @@ impl Simulation2D {
             p.velocity = p.velocity + p.acceleration * self.dt;
             p.position = p.position + p.velocity * self.dt;
             p.acceleration = Vec2::zero();
-            println!("x: {}, y: {}", p.position.x, p.position.y);
         }
     }
 }
@@ -66,8 +65,11 @@ impl<'a> Runner2D<'a> {
             last_time = now;
 
             self.sim.dt = dt;
-
             self.sim.update();
+
+            for p in self.sim.particles.iter() {
+                println!("vx: {}, posx: {}", p.velocity.x, p.position.x);
+            }
         }
     }
 }
