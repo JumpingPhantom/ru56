@@ -2,12 +2,13 @@ use std::ops::{Add, Mul};
 
 use crate::vector::Vec2;
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ForceType {
     Pulse,
     Constant,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Force2D {
     pub force_type: ForceType,
     pub force_vector: Vec2,

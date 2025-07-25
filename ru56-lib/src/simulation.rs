@@ -1,56 +1,34 @@
+use std::collections::HashSet;
+
 use crate::{
-    force::{Force2D, ForceType},
-    particle::Particle2D,
-    vector::Vec2,
+    force::Force2D,
+    traits::Object2D,
 };
 
 pub trait Simulator {
-    fn update(&mut self, dt: f32) -> Option<&Vec<Particle2D>>;
+    fn update(&mut self, dt: f32) -> Option<&Vec<Box<dyn Object2D>>>;
 }
 
 pub struct Simulator2D {
-    pub particles: Vec<Particle2D>,
-    pub forces: Vec<Force2D>,
+    pub objects: Vec<Box<dyn Object2D>>,
 }
 
 impl Simulator2D {
-    pub fn new(particles: Vec<Particle2D>, forces: Vec<Force2D>) -> Self {
-        Self { particles, forces }
+    pub fn new(objects: Vec<Box<dyn Object2D>>) -> Self {
+        Self { objects }
     }
 }
 
 impl Simulator for Simulator2D {
-    fn update(&mut self, dt: f32) -> Option<&Vec<Particle2D>> {
-        if self.particles.is_empty() {
+    fn update(&mut self, dt: f32) -> Option<&Vec<Box<dyn Object2D>>> {
+        if self.objects.is_empty() {
             return None;
         }
 
-        let mut accelerations = vec![Vec2::zero(); self.particles.len()];
-
-        for (i, particle) in self.particles.iter().enumerate() {
-            let mut total_acceleration = Vec2::zero();
-            for force in &self.forces {
-                let acceleration = force.acceleration(particle.mass);
-                total_acceleration = total_acceleration + acceleration;
-
-                if force.force_type != ForceType::Constant {
-                    let idx = self.forces.iter().position(|f| std::ptr::eq(f, force));
-                    if let Some(idx) = idx {
-                        self.forces.remove(idx);
-                    }
-                    break;
-                }
-            }
-            accelerations[i] = total_acceleration;
+        for object in &mut self.objects {
+            object.update(dt);
         }
 
-        for (p, acc) in self.particles.iter_mut().zip(accelerations.iter()) {
-            p.acceleration = *acc;
-            p.velocity = p.velocity + p.acceleration * dt;
-            p.position = p.position + p.velocity * dt;
-            p.acceleration = Vec2::zero();
-        }
-
-        Some(&self.particles)
+        Some(&self.objects)
     }
 }

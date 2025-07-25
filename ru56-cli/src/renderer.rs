@@ -1,6 +1,5 @@
-use ru56_lib::{particle::Particle2D, traits::Renderer};
-use std::fs::OpenOptions;
-use std::io::Write;
+use ru56_lib::traits::Object2D;
+use ru56_lib::traits::Renderer;
 use std::process::Command;
 
 pub struct Renderer2D {
@@ -18,7 +17,7 @@ impl Renderer2D {
 }
 
 impl Renderer for Renderer2D {
-    fn render(&self, data: &Vec<Particle2D>) {
+    fn render(&self, data: &Vec<Box<dyn Object2D>>) {
         clear_terminal();
 
         let (screen_w, screen_h) = self.resolution;
@@ -29,10 +28,10 @@ impl Renderer for Renderer2D {
         let scale_y = screen_h as f32 / self.viewport_size.1 as f32;
         let scale = scale_x.min(scale_y);
 
-        for particle in data {
+        for object in data {
             let (sx, sy) = world_to_screen(
-                particle.position.x,
-                particle.position.y,
+                object.position().x,
+                object.position().y,
                 0,
                 0,
                 scale,

@@ -1,4 +1,4 @@
-use crate::{particle::Particle2D, simulation::Simulator, traits::Renderer};
+use crate::{simulation::Simulator, traits::Renderer};
 
 
 pub struct Controller<'a, S: Simulator, R: Renderer> {
