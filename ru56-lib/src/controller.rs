@@ -1,16 +1,5 @@
-use crate::simulation::{Simulator};
+use crate::{particle::Particle2D, simulation::Simulator, traits::Renderer};
 
-pub trait Renderer {}
-
-pub struct Renderer2D {}
-
-impl Renderer2D {
-    fn new() -> Self {
-        Renderer2D {}
-    }
-}
-
-impl Renderer for Renderer2D {}
 
 pub struct Controller<'a, S: Simulator, R: Renderer> {
     simulator: Option<&'a mut S>,
@@ -36,16 +25,21 @@ impl<'a, S: Simulator, R: Renderer> Controller<'a, S, R> {
     }
 
     pub fn execute(&mut self) {
-        if let Some(sim) = self.simulator.as_mut() {
-            let mut last_time = std::time::Instant::now();
+        let mut last_time = std::time::Instant::now();
 
-            loop {
+        match (&mut self.simulator, &mut self.renderer) {
+            (Some(sim), ren_opt) => loop {
                 let now = std::time::Instant::now();
                 let dt = now.duration_since(last_time).as_secs_f32();
                 last_time = now;
-
-                sim.update(dt);
-            }
+                let data = sim.update(dt);
+                if let Some(ren) = ren_opt {
+                    if let Some(data) = data {
+                        ren.render(data);
+                    }
+                }
+            },
+            _ => {}
         }
     }
 }

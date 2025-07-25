@@ -13,7 +13,6 @@ pub struct Force2D {
     pub force_vector: Vec2,
 }
 
-
 impl Add for Force2D {
     type Output = Self;
     fn add(self, rhs: Self) -> Self {

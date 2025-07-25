@@ -5,7 +5,7 @@ use crate::{
 };
 
 pub trait Simulator {
-    fn update(&mut self, dt: f32);
+    fn update(&mut self, dt: f32) -> Option<&Vec<Particle2D>>;
 }
 
 pub struct Simulator2D {
@@ -15,17 +15,14 @@ pub struct Simulator2D {
 
 impl Simulator2D {
     pub fn new(particles: Vec<Particle2D>, forces: Vec<Force2D>) -> Self {
-        Self {
-            particles,
-            forces,
-        }
+        Self { particles, forces }
     }
 }
 
 impl Simulator for Simulator2D {
-    fn update(&mut self, dt: f32) {
+    fn update(&mut self, dt: f32) -> Option<&Vec<Particle2D>> {
         if self.particles.is_empty() {
-            return;
+            return None;
         }
 
         let mut accelerations = vec![Vec2::zero(); self.particles.len()];
@@ -53,5 +50,7 @@ impl Simulator for Simulator2D {
             p.position = p.position + p.velocity * dt;
             p.acceleration = Vec2::zero();
         }
+
+        Some(&self.particles)
     }
 }
